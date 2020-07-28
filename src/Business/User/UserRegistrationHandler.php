@@ -37,12 +37,16 @@ class UserRegistrationHandler
      */
     public function handle(UserRegistrationAction $action)
     {
+        $user = $this->repository->findOneBy(['email' => $action->email]);
+        if($user instanceof User)
+        {
+            throw new UserAlreadyExistException();
+        }
+
         $user           = new User($action->username, $action->email, $action->password);
         $hashedPassword = $this->encoder->encodePassword($user,$action->password);
         $user->changePassword($hashedPassword);
 
         $this->repository->create($user);
-
     }
-
 }

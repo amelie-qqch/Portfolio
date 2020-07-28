@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Business\User\Exceptions\UserAlreadyExistException;
 use App\Business\User\UserExistVerificationHandler;
 use App\Business\User\UserRegistrationAction;
 use App\Business\User\UserRegistrationHandler;
@@ -66,32 +67,27 @@ class RegistrationController extends AbstractController
 
         $form->handleRequest($request);
 
-        //Recupérer l'adresse mail passé dans le formulaire
-        $email = $form->get('email')->getData(); // OH PUTAIN CA FONCTIONNE !!!!!! :D :D
-        //Vérifier que l'utilisateur existe
-        $userExist = $this->userVerificationHandler->handle($email);
-
-        if(!$form->isSubmitted() || !$form->isValid() || $userExist)
+        if($form->isSubmitted() && $form->isValid())
         {
-            //checker comment le passer dans le template twig
-            if($userExist)
-            {
+            try {
+                $this->registrationHandler->handle($action);
+
+                $this->addFlash('success', 'Votre inscription a bien été prise en compte.');
+
+                return $this->redirectToRoute('home');
+            } catch (UserAlreadyExistException $exp) {
                 $this->addFlash('error', 'Vous avez déjà un compte.');
             }
+        } else {
             $this->addFlash('error', 'Erreur lors de votre inscription.');
-            return $this->render(
-                'user/user_registration.html.twig',
-                [
-                    'form' => $form->createView()
-                ]
-            );
         }
 
-        $this->registrationHandler->handle($action);
-
-        $this->addFlash('success', 'Votre inscription a bien été prise en compte.');
-
-        return $this->redirectToRoute('home');
+        return $this->render(
+            'user/user_registration.html.twig',
+            [
+                'form' => $form->createView()
+            ]
+        );
     }
 
 
