@@ -53,10 +53,10 @@ class ArticleController extends AbstractController
         $this->em->flush();
 */
 
-        return $this->render('pages/article/article.html.twig',
-            [
-                'articles'=>'articles'
-            ]);
+//        return $this->render('about/article/article.html.twig',
+//            [
+//                'articles'=>'articles'
+//            ]);
     }
 
 
@@ -80,7 +80,7 @@ class ArticleController extends AbstractController
                     'slug'  =>  $article->getSlug()
                 ], 301);
         }
-        return $this->render('pages/article/article.html.twig',
+        return $this->render('about/article/article.html.twig',
             [
                 'article'       =>  $article,
                 'current_menu'  =>  'article'// $this->getType ou un truc du genre

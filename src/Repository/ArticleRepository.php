@@ -30,6 +30,24 @@ class ArticleRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush($article);
     }
 
+    /**
+     * @param Article $article
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function delete(Article $article)
+    {
+        $this->getEntityManager()->remove($article);
+        $this->getEntityManager()->flush($article);
+    }
+
+    //ça fait pareil que create ça sert surement à rien du coup :(
+    public function update(Article $article)
+    {
+        $this->getEntityManager()->flush($article);
+    }
+
     // /**
     //  * @return Article[] Returns an array of Article objects
     //  */
@@ -64,7 +82,7 @@ class ArticleRepository extends ServiceEntityRepository
     public function findLatest():array
     {
         return $this->createQueryBuilder('article')
-            ->setMaxResults(9)
+            ->setMaxResults(2)
             ->getQuery()
             ->getResult();
     }

@@ -2,8 +2,8 @@
 
 namespace App\Controller\Article;
 
-use App\Business\ArticleCreationAction;
-use App\Business\ArticleCreationHandler;
+use App\Business\Article\ArticleCreationAction;
+use App\Business\Article\ArticleCreationHandler;
 use App\Form\ArticleCreationType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -25,6 +25,9 @@ class ArticleCreationController extends AbstractController
         $this->handler = $handler;
     }
 
+	
+	//IMPORTANT Séparation de la route recevant le formulaire soumit (celle avec request) et la route qui affiche le formulaire vide pour le remplir (purposeCreation)
+
     /**
      * @return Response
      */
@@ -33,17 +36,23 @@ class ArticleCreationController extends AbstractController
         $action = new ArticleCreationAction();
 
         // Préhydratation
-        $action->titre = 'Un titre par défaut';
-
+//        $action->title = 'Un titre par défaut';
+//        $action->picture="http://placehold.it/350x350";
+//        $action->content="du text";
+		
+		//passer l'action au formulaire va permettre d'associer le formulaire aux propriétés de l'action automatiquement
+        // au moment du submit (donc dans l'autre fonction ... mais du coup on le passe maintenant parce que ?)
         $form = $this->createArticleCreationType($action);
 
         return $this->render(
-            'pages/article_creation.html.twig',
+            'article/article_creation.html.twig',
             [
                 'form' => $form->createView()
             ]
         );
     }
+
+
 
     /**
      * @param Request $request
@@ -60,7 +69,7 @@ class ArticleCreationController extends AbstractController
             $this->addFlash('error', 'Erreur lors de la création de votre article.');
 
             return $this->render(
-                'pages/article_creation.html.twig',
+                'article/article_creation.html.twig',
                 [
                     'form' => $form->createView()
                 ]
@@ -91,7 +100,7 @@ class ArticleCreationController extends AbstractController
         );
 
         $form
-            ->add('submit', SubmitType::class)
+            ->add('creer', SubmitType::class)
         ;
 
         return $form;
