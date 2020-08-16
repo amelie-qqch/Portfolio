@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-35 p-2">
+        <h1>Vous vous inscrire ici</h1>
+
+        {% for flashMessage in app.session.flashbag.get('error') %}
+            {{ flashMessage }}
+        {% endfor %}
+
+        {% for flashMessage in app.session.flashbag.get('success') %}
+            {{ flashMessage }}
+        {% endfor %}
+
+        {{ form_start(form, {'attr':{'novalidate': 'novalidate'}}) }}
+
+
+        {{ form_row(form.username, {'label': 'Votre nom d\'utilisateur'}) }}
+        {{ form_row(form.email, {'label': 'Votre adresse mail'}) }}
+        {{ form_row(form.password, {'label': 'Votre mot de passe'}) }}
+        {{ form_row(form.passwordConfirmation, {'label': 'Confirmer votre mot de passe'}) }}
+
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}

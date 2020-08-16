@@ -4,6 +4,7 @@
 namespace App\Business\User;
 
 
+use App\Business\User\Exceptions\UserAlreadyExistException;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -33,7 +34,6 @@ class UserRegistrationHandler
 
     /**
      * @param UserRegistrationAction $action
-     * @return User
      */
     public function handle(UserRegistrationAction $action)
     {
