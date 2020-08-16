@@ -34,6 +34,13 @@ class ArticleUpdatingHandler
         $article->changeTitle($action->title);
         $article->changeContent($action->content);
         $article->changePicture($action->picture);
+        //vide la liste de tag pour pouvoir les remplacer par les nouveaux
+        $article->getTags()->clear();
+        foreach ($action->tags as $tag)
+        {
+            $article->addTag($tag);
+        }
+
 
         $this->repository->update($article);
 

@@ -2,8 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticleRepository;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,11 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Article
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -50,6 +47,94 @@ class Article
      * @ORM\Column(name="publicationDate", type="datetime", nullable=false)
      */
     private $publicationDate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="articles")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $author;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="articles")
+     */
+    private $tags;
+
+
+    /**
+     * @return User|null
+     */
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    /**
+     * Article constructor.
+     * @param $title
+     * @param $content
+     * @param $picture
+     * @param $author
+     * @param $tags
+     */
+    public function __construct($title, $content, $picture, $author, $tags)
+    {
+        $this->title   = $title;
+        $this->content = $content;
+        $this->picture = $picture;
+        $this->author  = $author;
+        $this->tags    = $tags;
+
+        $this->publicationDate = new \DateTime();
+
+    }
+
+//    public function update($action)
+//    {
+//        $article = new self();
+//
+//        $article->id              = $action->id;
+//        $article->title           = $action->title;
+//        $article->content         = $action->content;
+//        $article->picture         = $action->picture;
+//
+//        return $article;
+//    }
+
+    /**
+     * @param $title
+     */
+    public function changeTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @param $content
+     */
+    public function changeContent($content)
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * @param $picture
+     */
+    public function changePicture($picture)
+    {
+        $this->picture = $picture;
+    }
+
+
+    /**
+     * @param User|null $author
+     * @return $this
+     */
+    public function changeAuthor(?User $author): self
+    {
+        $this->author = $author;
+
+        return $this;
+    }
 
 
     /**
@@ -93,59 +178,41 @@ class Article
     }
 
     /**
-     * Article constructor.
-     * @param $title
-     * @param $content
-     * @param $picture
+     * @return Collection|Tag[]
      */
-    public function __construct($title, $content, $picture)
+    public function getTags(): Collection
     {
-        $this->title   = $title;
-        $this->content = $content;
-        $this->picture = $picture;
-
-        $this->publicationDate = new \DateTime();
-    }
-
-//    public function update($action)
-//    {
-//        $article = new self();
-//
-//        $article->id              = $action->id;
-//        $article->title           = $action->title;
-//        $article->content         = $action->content;
-//        $article->picture         = $action->picture;
-//
-//        return $article;
-//    }
-
-    /**
-     * @param $title
-     */
-    public function changeTitle($title)
-    {
-        $this->title = $title;
+        return $this->tags;
     }
 
     /**
-     * @param $content
+     * @param Tag $tag
+     * @return $this
      */
-    public function changeContent($content)
+    public function addTag(Tag $tag): self
     {
-        $this->content = $content;
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+            $tag->addArticle($this);
+        }
+
+        return $this;
     }
 
     /**
-     * @param $picture
+     * @param Tag $tag
+     * @return $this
      */
-    public function changePicture($picture)
+    public function removeTag(Tag $tag): self
     {
-        $this->picture = $picture;
+        if ($this->tags->contains($tag)) {
+            $this->tags->removeElement($tag);
+            $tag->removeArticle($this);
+        }
+
+        return $this;
     }
 
-    public function getAuthor(): ?User
-    {
-        return $this->author;
-    }
+
 
 }

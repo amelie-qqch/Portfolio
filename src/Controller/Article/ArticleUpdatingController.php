@@ -13,7 +13,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ArticleUpdatingController extends AbstractController
 {
@@ -55,13 +54,15 @@ class ArticleUpdatingController extends AbstractController
         $updateAction->title           = $article->getTitle();
         $updateAction->content         = $article->getContent();
         $updateAction->picture         = $article->getPicture();
+        $updateAction->tags            = $article->getTags();
 
         $form = $this->createArticleUpdatingType($updateAction, $id);
 
         return $this->render(
             'article/article_creation.html.twig',
             [
-                'form' => $form->createView()
+                'form'      => $form->createView(),
+                'oldTags'   => $article->getTags()
             ]
         );
     }
@@ -92,7 +93,7 @@ class ArticleUpdatingController extends AbstractController
         }
 
         // Success
-        $article = $this->updatingHandler->handle($action);
+        $this->updatingHandler->handle($action);
 
         $this->addFlash('success', 'Votre article a été modifié avec succès.');
 

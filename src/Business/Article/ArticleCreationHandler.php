@@ -12,7 +12,9 @@ class ArticleCreationHandler
      */
     private $repository;
 
+
     /**
+     * ArticleCreationHandler constructor.
      * @param ArticleRepository $repository
      */
     public function __construct(ArticleRepository $repository)
@@ -29,7 +31,8 @@ class ArticleCreationHandler
     public function handle(ArticleCreationAction $action): Article
     {
 		//Entité chargé avec les données du DTO grâce à fonction create
-        $article = new Article($action->title, $action->content, $action->picture);
+        //$action->tags   = $action->addTag($action->tag);
+        $article        = new Article($action->title, $action->content, $action->picture, $action->author, $action->tags);
 
 		//Fait persister en bdd
         $this->repository->create($article);

@@ -3,9 +3,7 @@
 
 namespace App\Business\Article;
 
-
-use App\Entity\Article;
-use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class ArticleUpdatingAction
 {
@@ -24,6 +22,24 @@ class ArticleUpdatingAction
      */
     public $picture;
 
+    /**
+     * @var ArrayCollection
+     */
+    public $tags;
+
+//    /**
+//     * @param Tag $tag
+//     * @return $this
+//     */
+//    public function removeTag(Tag $tag): self
+//    {
+//        if ($this->tags->contains($tag)) {
+//            $this->tags->removeElement($tag);
+//            $tag->removeArticle($this);
+//        }
+//
+//        return $this;
+//    }
 
     /**
      * @param $article
@@ -36,6 +52,7 @@ class ArticleUpdatingAction
         $action->title           = $article->getTitle();
         $action->content         = $article->getContent();
         $action->picture         = $article->getContent();
+        $action->tags            = $article->getTags();
 
         return $action;
     }

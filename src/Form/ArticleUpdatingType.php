@@ -4,9 +4,9 @@
 namespace App\Form;
 
 
-use App\Business\ArticleUpdatingAction;
-use App\Entity\Article;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use App\Business\Article\ArticleUpdatingAction;
+use App\Entity\Tag;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -51,6 +51,15 @@ class ArticleUpdatingType extends AbstractType
                 UrlType::class,
                 [
                     'required'  => false
+                ]
+            )
+            ->add(
+                'tags',
+                EntityType::class,
+                [
+                    'class' => Tag::class,
+                    'choice_label' => 'name',
+                    'multiple'      => true
                 ]
             )
 //            ->add(

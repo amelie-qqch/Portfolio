@@ -3,12 +3,15 @@
 namespace App\Form;
 
 use App\Business\Article\ArticleCreationAction;
+use App\Entity\Tag;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
 
 class ArticleCreationType extends AbstractType
 {
@@ -20,8 +23,6 @@ class ArticleCreationType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-
         $builder
             ->add(
                 'title',
@@ -29,38 +30,43 @@ class ArticleCreationType extends AbstractType
                 [
                     'required' => true,
                     'attr' => [
-                        'placeholder' => 'test',
+                        'placeholder' => 'titre de l\'article',
 
                     ],
-                    'help'  => "Le Titre de votre article"
+                    'help' => "Le Titre de votre article"
                 ]
             )
             ->add(
                 'content',
                 TextareaType::class,
                 [
-                    'required'  => false
+                    'required' => false
                 ]
             )
             ->add(
                 'picture',
                 UrlType::class,
                 [
-                    'required'  =>  false
+                    'required' => false
                 ]
             )
 //            ->add(
-//                'competences',
-//                CollectionType::class
-//            )
-//            ->add(
-//                'type',
-//                EntityType::class,
+//                'tag',
+//                ChoiceType::class,
 //                [
-//                    'class'=> Type::class,
-//                    'choices' => $types,
+//                    'choice_value' => ChoiceList::value($this, 'uuid')
 //                ]
 //            )
+            ->add(
+                'tags',
+                EntityType::class,
+                [
+                    'class'         => Tag::class,
+                    'choice_label'  => 'name',
+                    'multiple'      => true
+                ]
+            )
+
         ;
     }
 

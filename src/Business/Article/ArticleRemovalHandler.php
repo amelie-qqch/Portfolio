@@ -3,9 +3,7 @@
 
 namespace App\Business\Article;
 
-
 use App\Repository\ArticleRepository;
-use http\Env\Response;
 
 class ArticleRemovalHandler
 {
@@ -32,7 +30,19 @@ class ArticleRemovalHandler
     public function handle(ArticleRemovalAction $action)
     {
         $article = $this->repository->findOneBy(['id'=>$action->id]);
+        //vérifier que l'article à des tags
+        if(!$article->getTags()->isEmpty())
+        {
+            // pour chaque tag enlever l'article de sa collection
+            $tags = $article->getTags();
+            foreach ($tags as $tag) {
+                $tag->removeArticle($article);
+            }
+            $article->getTags()->clear();
 
+            //Enlever l'article de la collection d'article de tag ?
+
+        }
         $this->repository->delete($article);
 
     }

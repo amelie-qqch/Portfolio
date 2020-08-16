@@ -33,6 +33,8 @@ class ArticleCreationController extends AbstractController
      */
     public function purposeCreation(): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY','Access denied','Vous devez posséder un compte pour accéder à cette fonctionnalité.');
+        
         $action = new ArticleCreationAction();
 
         // Préhydratation
@@ -60,8 +62,9 @@ class ArticleCreationController extends AbstractController
      */
     public function creation(Request $request): Response
     {
-        $action = new ArticleCreationAction();
-        $form   = $this->createArticleCreationType($action);
+        $action         = new ArticleCreationAction();
+        $action->author = $this->getUser();
+        $form           = $this->createArticleCreationType($action);
 
         $form->handleRequest($request);
         if (!$form->isSubmitted() || !$form->isValid()) {
@@ -77,7 +80,7 @@ class ArticleCreationController extends AbstractController
         }
 
         // Success
-        $article = $this->handler->handle($action);
+        $this->handler->handle($action);
 
         $this->addFlash('success', 'Votre article a été créé avec succès.');
 
